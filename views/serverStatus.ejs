@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title><%= title %></title>
+    <script type="text/javascript" src="javascripts/swfobject.js"></script>
+    <script type="text/javascript" src="javascripts/json2.js"></script>
+    <script type="text/javascript">
+
+function ofc_ready()
+{
+	//alert('ofc_ready');
+	//load();
+}
+
+function open_flash_chart_data()
+{
+    //alert( 'reading data' );
+    return JSON.stringify(chart);
+}
+
+function load_1()
+{
+	tmp = findSWF("my_chart");
+	x = tmp.load( JSON.stringify(chart) );
+}
+
+function findSWF(movieName) {
+  if (navigator.appName.indexOf("Microsoft")!= -1) {
+    return window[movieName];
+  } else {
+    return document[movieName];
+  }
+}
+
+var chart = {
+  "y_legend":{
+    "text":   "<%= curChartType %>",
+    "style": "{color: #736AFF;}"
+  },
+
+  "elements":[
+    {
+      "type":      "line",
+      "colour":    "#736AFF",
+      "text":      "time",
+      "values" :  [<%= chartData %>]
+    }
+  ],
+
+  "y_axis":{
+    "max":   <%= chartDataMax %>
+  }
+
+};
+ 
+ 
+</script>
+  </head>
+  <body>
+    <h1><%= title %> </h1>
+    
+    <% if (servers) { %>
+        <table border=1 cellpadding=5 cellspacing=0>
+          <tr>
+            <td>IP</td>
+            <td>系统</td>
+            <td>内存</td>
+            <td>CPU</td>
+            <td colspan=5>按天查看</td>
+            <td colspan=5>按小时查看</td>
+          </tr> 
+          <tr>
+            <% servers.forEach(function(server){ %>
+              <td><%= server._id %></td>
+              <td><%= server.systemtype %></td>
+              <td><%= server.totalmem %></td>
+              <td><%= server.cpus %></td>
+              <% menuButtons.forEach(function(button){ %>
+                <td><a href="<%= button[1] %>&ip=<%= server._id %>&fromtime=0&totime=0"><%= button[0] %></a></td>
+              <% }) %>
+              <% menuButtons.forEach(function(button){ %>
+                <td><a href="<%= button[2] %>&ip=<%= server._id %>&fromtime=0&totime=0"><%= button[0] %></a></td>
+              <% }) %>
+            <% }) %>
+          </tr>
+        </table>
+    <% } %>
+    
+    
+    <% if (chartTypes) { %>
+        <br>
+        <table border=1 cellpadding=5 cellspacing=0>
+          <tr>
+            <td>当前报表类型：</td>
+            <td><%= curChartType %> </td>
+            <td>选择报表类型：</td>
+            <% chartTypes.forEach(function(chartType){ %>
+              <td>
+              <a href="?type=<%= query.type %>&ip=<%= query.ip %>&fromtime=<%= query.fromtime %>&totime=<%= query.totime %>&chartType=<%= chartType %>"><%= chartType %></a>
+              </td>
+            <% }) %>
+          </tr>
+        </table>
+    <% } %>
+    
+    <% if (query.IFACE) { %>
+    
+        <br>
+        <table border=1 cellpadding=5 cellspacing=0>
+          <tr>
+            <td>当前网络接口：</td>
+            <td><%= query.IFACE %></td>
+            <td>选择网络接口：</td>
+            
+            <% if (query.ALL_IFACE) { %>
+                <% query.ALL_IFACE.forEach(function(iface){ %>
+                    <td>
+                    <a href="?type=<%= query.type %>&ip=<%= query.ip %>&fromtime=<%= query.fromtime %>&totime=<%= query.totime %>&chartType=<%= query.curChartType %>&IFACE=<%= iface %>"><%= iface %></a>
+                    </td>
+                <% }) %>
+            <% } %>
+            
+          </tr>
+        </table>
+    <% } %>
+
+    <h2>
+        <% if (chartTitle) { %>
+            <%= chartTitle %> 
+        <% } %>
+        
+        <% if (query.IFACE) { %>
+            ：<%= query.IFACE %> 
+        <% } %>
+        <% if (curChartType) { %>
+            ：<%= curChartType %> 
+        <% } %>
+    </h2>
+    <div id="my_chart"></div>
+    <script type="text/javascript">
+    swfobject.embedSWF("open-flash-chart.swf", "my_chart", "900", "600", "9.0.0");
+    </script>
+  </body>
+</html> 

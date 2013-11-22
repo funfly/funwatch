@@ -1,0 +1,86 @@
+﻿<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<script type="text/javascript" src="javascripts/swfobject.js"></script>
+<script type="text/javascript" src="javascripts/json2.js"></script>
+
+
+<script type="text/javascript">
+
+function ofc_ready()
+{
+	//alert('ofc_ready');
+	//load();
+}
+
+function open_flash_chart_data()
+{
+    //alert( 'reading data' );
+    return JSON.stringify(chart);
+}
+
+function load_1()
+{
+	tmp = findSWF("my_chart");
+	x = tmp.load( JSON.stringify(chart) );
+}
+
+function findSWF(movieName) {
+  if (navigator.appName.indexOf("Microsoft")!= -1) {
+    return window[movieName];
+  } else {
+    return document[movieName];
+  }
+}
+
+var chart = {
+  "y_legend":{
+    "text":   "Time of day",
+    "style": "{color: #736AFF;}"
+  },
+
+  "elements":[
+    {
+      "type":      "line",
+      "colour":    "#736AFF",
+      "text":      "Avg. wave height (cm)",
+      "font-size": 10,
+      "width":     2,
+      "dot-size":  4,
+      "halo-size": 0,
+      "values" :   [
+        6,
+        6,
+        10,
+        8,
+        8
+        ]
+    }
+  ],
+
+  "y_axis":{
+    "max":   20
+  }
+
+};
+ 
+ 
+</script>
+
+</head>
+<body>
+    
+<div id="my_chart"></div>
+ 	
+<script type="text/javascript">
+swfobject.embedSWF("open-flash-chart.swf", "my_chart", "450", "300", "9.0.0");
+</script>
+
+
+	
+<div>
+<INPUT TYPE=BUTTON OnClick="load_1();" VALUE="Chart 1">
+	</div>
+
+</body>
+</html>
